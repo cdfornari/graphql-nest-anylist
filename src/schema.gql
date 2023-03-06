@@ -1,0 +1,141 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  fullName: String!
+  email: String!
+  roles: [Role!]!
+  active: Boolean!
+  lastUpdatedBy: User
+  itemCount: Int!
+  items(skip: Int = 0, limit: Int = 10, search: String): [Item!]!
+  listCount: Int!
+  lists: [List!]!
+}
+
+"""User role"""
+enum Role {
+  """Admin privileges"""
+  admin
+
+  """Normal privileges"""
+  user
+}
+
+type List {
+  id: ID!
+  name: String!
+  user: User!
+  items(skip: Int = 0, limit: Int = 10, search: String): [ListItem!]!
+  itemsCount: Int!
+}
+
+type ListItem {
+  id: ID!
+  quantity: Float!
+  completed: Boolean!
+  list: List!
+  item: Item!
+}
+
+type Item {
+  id: ID!
+  name: String!
+  unit: String
+  user: User!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
+type Query {
+  items(skip: Int = 0, limit: Int = 10, search: String): [Item!]!
+  item(id: ID!): Item!
+  users(roles: [Role!] = []): [User!]!
+  user(id: ID!): User!
+  lists(skip: Int = 0, limit: Int = 10, search: String): [List!]!
+  list(id: ID!): List!
+  listItem(id: ID!): ListItem!
+  currentUser: AuthResponse!
+}
+
+type Mutation {
+  createItem(createItemInput: CreateItemInput!): Item!
+  updateItem(updateItemInput: UpdateItemInput!): Item!
+  removeItem(id: ID!): Item!
+  blockUser(id: ID!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  createList(createListInput: CreateListInput!): List!
+  updateList(updateListInput: UpdateListInput!): List!
+  removeList(id: ID!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(updateListItemInput: UpdateListItemInput!): ListItem!
+  signUp(signUpInput: SignUpInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+  executeSeed: Boolean!
+}
+
+input CreateItemInput {
+  name: String!
+  unit: String
+}
+
+input UpdateItemInput {
+  name: String
+  unit: String
+  id: ID!
+}
+
+input UpdateUserInput {
+  fullName: String
+  email: String
+
+  """Minimum 6 characters"""
+  password: String
+  id: ID!
+  roles: [Role!]
+  active: Boolean
+}
+
+input CreateListInput {
+  """List name"""
+  name: String!
+}
+
+input UpdateListInput {
+  """List name"""
+  name: String
+  id: ID!
+}
+
+input CreateListItemInput {
+  quantity: Float = 0
+  listId: ID!
+  itemId: ID!
+}
+
+input UpdateListItemInput {
+  quantity: Float = 0
+  listId: ID
+  itemId: ID
+  id: ID!
+}
+
+input SignUpInput {
+  fullName: String!
+  email: String!
+
+  """Minimum 6 characters"""
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+
+  """Minimum 6 characters"""
+  password: String!
+}
